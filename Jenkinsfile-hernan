@@ -35,7 +35,7 @@ pipeline {
             }
 
         }
-        stage('Sonar'){
+        /*stage('Sonar'){
             steps  {
                 echo 'Quality sonar..';
                 withSonarQubeEnv('sonarqube') {
@@ -43,7 +43,7 @@ pipeline {
                }
             }
         }
-        /*stage('actifactory'){
+        stage('actifactory'){
             steps {
                  script {
                      echo 'actifactory...saving';
