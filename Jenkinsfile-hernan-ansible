@@ -14,6 +14,28 @@ pipeline {
                 echo '======================= ansible local ==============='
             }
         }
+        stage('Testing'){
+            steps {
+                echo 'Testing';
+                sh 'mvn test -B -ntp'
+                
+            }
+            post {
+                success {
+                     echo 'executeing jacoco....';
+                    jacoco()
+                     echo 'executeing junit....';
+                    junit 'target/surefire-reports/*.xml'
+                }
+                always {
+                    echo 'Validation finished'
+                }
+                failure {
+                    echo 'Error was out come in the processed...'
+                }
+            }
+
+        }
         stage('Deploy'){
             /*agent {
                 docker {
