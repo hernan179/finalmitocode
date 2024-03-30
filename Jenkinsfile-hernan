@@ -1,0 +1,96 @@
+pipeline {
+    agent any
+    tools {
+        maven 'maven3.8.8'
+        //jfrog 'artifactory-test'
+    }
+
+    stages {
+        stage('Build'){
+            steps {
+                echo 'Witout Checkout form jenkingsfile-hernan, implicited was done.. skiptest';
+                //git 'https://github.com/hernan179/spring-petclinic-rest.git'
+                 sh 'mvn clean install -DskipTests -B -ntp'
+            }
+        }
+        stage('Testing'){
+            steps {
+                echo 'Testing';
+                sh 'mvn test -B -ntp'
+                
+            }
+            post {
+                success {
+                     echo 'executeing jacoco....';
+                    jacoco()
+                     echo 'executeing junit....';
+                    junit 'target/surefire-reports/*.xml'
+                }
+                always {
+                    echo 'Validation finished'
+                }
+                failure {
+                    echo 'Error was out come in the processed...'
+                }
+            }
+
+        }
+        stage('Sonar'){
+            steps  {
+                echo 'Quality sonar..';
+                withSonarQubeEnv('sonarqube') {
+                  sh 'mvn clean package sonar:sonar'              
+               }
+            }
+        }
+        stage('actifactory'){
+            steps {
+                 script {
+                     echo 'actifactory...saving';
+                    
+                    def server = Artifactory.server 'artifactory-test'
+                    def repository = 'spring-petclinic-rest'
+                    
+                    echo 'Deploy to '+server; 
+
+                    def version = sh script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true
+                    def artifactId = sh script: 'mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout', returnStdout: true
+                
+                    echo 'version of '+version
+                    echo 'artifactId '+artifactId 
+
+                    SOURCE_HASH=sh ( script: 'git rev-parse HEAD | cut -c1-6',returnStdout: true ).trim()
+                    echo 'Brach: '+SOURCE_HASH; 
+
+                    def branch_nem = scm.branches[0].name
+                    if (branch_nem.contains("*/")) {
+                        branch_nem = branch_nem.split("\\*/")[1]
+                    }
+   
+                    if(branch_nem == 'master' || branch_nem == 'origin' || branch_nem == 'main'){
+                        repository = repository + '-prod'
+                    } 
+                    
+                    echo 'Destination repository ' + repository
+                    def uploadSpec = """
+                        {
+                            "files": [
+                                {
+                                    "pattern": "target/.*.war",
+                                    "target": "$repository",
+                                    "regexp": "true"
+                                }
+                            ]
+                        }
+                    """
+                    server.upload spec: uploadSpec
+                 }
+            }
+        }
+        stage('Deploy'){
+            
+            steps {
+            
+        }
+    }
+}
