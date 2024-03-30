@@ -43,7 +43,7 @@ pipeline {
                }
             }
         }
-        stage('actifactory'){
+        /*stage('actifactory'){
             steps {
                  script {
                      echo 'actifactory...saving';
@@ -86,7 +86,7 @@ pipeline {
                     server.upload spec: uploadSpec
                  }
             }
-        }
+        }*/
         stage('Deploy'){
             
             steps {
