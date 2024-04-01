@@ -85,7 +85,7 @@
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
-				<version>${docker.jib-maven-plugin.version}</version>
+				<version>3.8.8</version>
 				<configuration>
 					<to>
 						<image>docker.io/${docker.image.prefix}/${project.artifactId}</image>
