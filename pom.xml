@@ -81,63 +81,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>jib-maven-plugin</artifactId>
-				<version>3.8.8</version>
-				<configuration>
-					<to>
-						<image>docker.io/${docker.image.prefix}/${project.artifactId}</image>
-						<tags>
-							<tag>${project.version}</tag>
-							<tag>latest</tag>
-						</tags>
-					</to>
-				</configuration>
-			</plugin>
-
-
-			<plugin>
-				<groupId>org.openapitools</groupId>
-				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<!-- RELEASE_VERSION -->
-				<version>${openapi-generator-maven-plugin.version}</version>
-				<!-- /RELEASE_VERSION -->
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openapi.yml</inputSpec>
-							<generatorName>spring</generatorName>
-							<library>spring-boot</library>
-
-							<!-- Only enabling model andopenapi-generator-maven-plugin API generation -->
-							<modelNameSuffix>Dto</modelNameSuffix>
-							<apiPackage>org.springframework.samples.petclinic.rest.api</apiPackage>
-							<generateModels>true</generateModels>
-							<modelPackage>org.springframework.samples.petclinic.rest.dto</modelPackage>
-							<!-- <generateSupportingFiles>true</generateSupportingFiles> <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate> -->
-							<generateApis>true</generateApis>
-							<configOptions>
-								<!-- RestController implementation is provided by Petclinic developers -->
-								<interfaceOnly>true</interfaceOnly>
-								<!-- Activating Java 8 features -->
-								<performBeanValidation>true</performBeanValidation>
-								<dateLibrary>java8</dateLibrary>
-								<useSpringBoot3>true</useSpringBoot3>
-								<openApiNullable>false</openApiNullable>
-								<!-- override the default library to jersey2 -->
-								<serializationLibrary>jackson</serializationLibrary>
-								<!-- switch documentation provider to springdoc -->
-								<documentationProvider>springdoc</documentationProvider>
-							</configOptions>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
